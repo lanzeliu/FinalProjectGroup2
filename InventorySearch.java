@@ -62,6 +62,8 @@ public class InventorySearch extends InventorySearchBuild {
         northPanel.add(JCBSortBy, BorderLayout.EAST);
         
         northPanel.add(Box.createRigidArea(new Dimension(100, 250)));
+	northPanel.setLayout(new FlowLayout(FlowLayout.RIGHT));
+
         getContentPane().add(northPanel, BorderLayout.NORTH);
         getContentPane().setVisible(true);
 	}
