@@ -18,7 +18,7 @@ import javax.swing.JTextField;
 
 public class InventorySearchBuild extends JFrame {
 	
-	protected JPanel westPanel, centerPanel, southPanel, northPanel;
+	protected JPanel westPanel, centerPanel, southPanel, northPanel, westPanelOut, centerPanelOut;
     protected JScrollPane westScrollPane, centerScrollPane;
     protected BoxLayout westLayout, southLayout;
 	protected GridBagLayout centerLayout;

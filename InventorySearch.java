@@ -1,25 +1,8 @@
 package finalprojectgroup2test2;
 
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.FlowLayout;
-import java.awt.Graphics;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
+import java.awt.*;
 
-import javax.swing.BorderFactory;
-import javax.swing.Box;
-import javax.swing.BoxLayout;
-import javax.swing.ImageIcon;
-import javax.swing.JButton;
-import javax.swing.JCheckBox;
-import javax.swing.JComboBox;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JTextField;
-
+import javax.swing.*;
 
 
 public class InventorySearch extends InventorySearchBuild {
@@ -34,13 +17,10 @@ public class InventorySearch extends InventorySearchBuild {
 	
 	public void buildUI() {
 		this.buildNorthPanel();
-		
-		this.defineWestPanelComonents();
+		this.defineWestPanelComponents();
 		this.buildWestPanel();
-		
 		this.buildCentralPanel();
-		
-		this.defineSouthPanelComonents();
+		this.defineSouthPanelComponents();
 		this.buildSouthPanel();
 	}
 
@@ -62,14 +42,13 @@ public class InventorySearch extends InventorySearchBuild {
         northPanel.add(JCBSortBy, BorderLayout.EAST);
         
         northPanel.add(Box.createRigidArea(new Dimension(100, 250)));
-	northPanel.setLayout(new FlowLayout(FlowLayout.RIGHT));
+		northPanel.setLayout(new FlowLayout(FlowLayout.RIGHT));
 
         getContentPane().add(northPanel, BorderLayout.NORTH);
-        getContentPane().setVisible(true);
 	}
 	
 	
-	public void defineWestPanelComonents() {
+	public void defineWestPanelComponents() {
 		
         labelCategory = new JLabel("Category");
         labelEmpty = new JLabel("");
@@ -101,7 +80,8 @@ public class InventorySearch extends InventorySearchBuild {
 	public void buildWestPanel() {
 		westLayout = new BoxLayout(westPanel, BoxLayout.Y_AXIS);
         westPanel.setLayout(westLayout);
-        
+
+        //adding filters
 		westPanel.add(Box.createRigidArea(new Dimension(0, 10)));
         westPanel.add(labelCategory);
         westPanel.add(bottonNew);
@@ -143,25 +123,48 @@ public class InventorySearch extends InventorySearchBuild {
         westPanel.add(JBSearch);
         
         westPanel.setBorder(BorderFactory.createTitledBorder("Filter Results"));
-        westPanel.setPreferredSize(new Dimension(300, 100));
-        westScrollPane = new JScrollPane(westPanel, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,
-				JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-        westScrollPane.getVerticalScrollBar().setUnitIncrement(15);
-        getContentPane().add(westPanel, BorderLayout.WEST);
-        getContentPane().setVisible(true);
 
+        /*
+        when the window is max, westScrollPanel will contain all filters(does not need to scroll down)
+        with height of 764, the height may be changed when adding new filters
+         */
+        westPanel.setPreferredSize(new Dimension(300, 764));
+
+
+        /*
+        westPanelOut should be BorderLayout to make sure the filters wont collapse when there are too many
+         */
+        westPanelOut = new JPanel();
+        westPanelOut.setLayout(new BorderLayout());
+        westPanelOut.add(westPanel, BorderLayout.NORTH);
+        westScrollPane = new JScrollPane(westPanelOut, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+        westScrollPane.getVerticalScrollBar().setUnitIncrement(15);
+        getContentPane().add(westScrollPane, BorderLayout.WEST);
 	}
 	
 	public void buildCentralPanel() {
 		centerPanel.setBorder(BorderFactory.createTitledBorder("Results"));
-        centerLayout = new GridBagLayout();
-        centerPanel.setLayout(centerLayout);
+		//centerPanel.setPreferredSize(new Dimension(getWidth(),764));
+        centerPanel.setLayout(new BoxLayout(centerPanel, BoxLayout.Y_AXIS));
 
-        getContentPane().add(centerPanel, BorderLayout.CENTER);
-        getContentPane().setVisible(true);
+        //display results test
+		for(int j=0;j<30;j++) {
+			for (int i = 1; i < 4; i++) {
+				String imagePath = i + ".jpeg";
+				ResultPanel resultPanel = new ResultPanel(imagePath);
+				this.centerPanel.add(resultPanel);
+			}
+		}
+
+		centerPanelOut = new JPanel();
+		centerPanelOut.setLayout(new BorderLayout());
+		centerPanelOut.add(centerPanel, BorderLayout.NORTH);
+		centerScrollPane = new JScrollPane(centerPanel, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+		centerScrollPane.getVerticalScrollBar().setUnitIncrement(15);
+		getContentPane().add(centerScrollPane, BorderLayout.CENTER);
 	}
 	
-	public void defineSouthPanelComonents() {
+	public void defineSouthPanelComponents() {
 		JBBack = new JButton("Back");
 		JBPreviousPage = new JButton("Previous Page");
 		JBNextPage = new JButton("Next Page");
@@ -174,31 +177,81 @@ public class InventorySearch extends InventorySearchBuild {
         getContentPane().add(southPanel, BorderLayout.SOUTH);
         getContentPane().setVisible(true);
 	}
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
+
 	public static void main(String[] args) {
 		InventorySearch is = new InventorySearch("dealer1");
 		is.setVisible(true);
 	}
 
+}
+
+class ResultPanel extends JPanel{
+
+	ImageIcon imageIcon;
+	Image image;
+	JLabel resultPrice, resultLocation, resultMake, resultYear, resultMileage, resultCondition;
+	JButton checkButton;
+
+	ResultPanel(String imagePath) {
+		this.showImage(imagePath);
+		this.showInfo();
+	}
+
+	private void showImage(String imagePath){
+		this.setBorder(BorderFactory.createLineBorder(Color.black));
+		this.imageIcon = new ImageIcon(imagePath);
+		this.image = this.imageIcon.getImage();
+		Image newImage = this.image.getScaledInstance(100, 100, Image.SCALE_SMOOTH);
+		this.imageIcon = new ImageIcon(newImage);
+		JLabel jLabel = new JLabel(this.imageIcon);
+		this.add(jLabel);
+		this.setBorder(BorderFactory.createEmptyBorder(10,0,10,10));
+
+	}
+
+	private void showInfo(){
+		this.createComponents();
+		this.addComponents();
+		this.addListeners();
+	}
+
+	private void createComponents(){
+		this.checkButton = new JButton("Check Availability");
+		this.resultCondition = new JLabel("Condition: ");
+		this.resultLocation = new JLabel("Location: ");
+		this.resultMake = new JLabel("Make: ");
+		this.resultMileage = new JLabel("Mileage: ");
+		this.resultYear = new JLabel("Year: ");
+		this.resultPrice = new JLabel("Price: ");
+		this.checkButton.setPreferredSize(new Dimension(200,50));
+		this.resultPrice.setPreferredSize(new Dimension(100,50));
+		this.resultLocation.setPreferredSize(new Dimension(150,50));
+		this.resultMileage.setPreferredSize(new Dimension(150,50));
+		this.resultCondition.setPreferredSize(new Dimension(150,50));
+		this.resultYear.setPreferredSize(new Dimension(100,50));
+		this.resultMake.setPreferredSize(new Dimension(100,50));
+	}
+
+	private void addComponents(){
+		this.add(this.resultPrice);
+		this.add(this.resultCondition);
+		this.add(this.resultMake);
+		this.add(this.resultYear);
+		this.add(this.resultMileage);
+		this.add(this.resultLocation);
+		this.add(this.checkButton);
+	}
+
+	private void addListeners(){
+		this.checkButton.addActionListener((e -> {DetailTest detailTest = new DetailTest();}));
+	}
+}
+
+//This class is for test only
+class DetailTest extends JFrame{
+	DetailTest(){
+		this.setSize(400,300);
+		this.setLocation(790,380);
+		this.setVisible(true);
+	}
 }
