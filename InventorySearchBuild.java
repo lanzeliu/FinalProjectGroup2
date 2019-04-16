@@ -5,6 +5,7 @@ import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
@@ -24,6 +25,7 @@ public class InventorySearchBuild extends JFrame {
 	protected GridBagLayout centerLayout;
     protected GridBagConstraints centerConstraints;
     protected ArrayList<JComboBox> JCBList;
+    protected List<ResultPanel> resultPanelList;
     
     protected JLabel labelCategory, labelEmpty, labelYear, labelTo, labelTo2, labelMileage, labelPrice, labelLocation, labelZipcode, labelMake, labelModel, labelType, labelSeatCount, labelSortBy;
     protected JCheckBox bottonNew, bottonUsed;

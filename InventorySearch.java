@@ -1,6 +1,8 @@
 package finalprojectgroup2test2;
 
 import java.awt.*;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.*;
 
@@ -148,13 +150,18 @@ public class InventorySearch extends InventorySearchBuild {
         centerPanel.setLayout(new BoxLayout(centerPanel, BoxLayout.Y_AXIS));
 
         //display results test
+        this.resultPanelList = new ArrayList<>();
 		for(int j=0;j<30;j++) {
 			for (int i = 1; i < 4; i++) {
 				String imagePath = i + ".jpeg";
 				ResultPanel resultPanel = new ResultPanel(imagePath);
-				this.centerPanel.add(resultPanel);
+                this.resultPanelList.add(resultPanel);
+                resultPanel.number.setText(Integer.toString(this.resultPanelList.size()));
+				this.centerPanel.add(this.resultPanelList.get(this.resultPanelList.size()-1));
 			}
 		}
+
+
 
 		centerPanelOut = new JPanel();
 		centerPanelOut.setLayout(new BorderLayout());
@@ -189,15 +196,16 @@ class ResultPanel extends JPanel{
 
 	ImageIcon imageIcon;
 	Image image;
-	JLabel resultPrice, resultLocation, resultMake, resultYear, resultMileage, resultCondition;
+	JLabel resultPrice, resultLocation, resultMake, resultYear, resultMileage, resultCondition, number;
 	JButton checkButton;
-
+    String imagePath;
 	ResultPanel(String imagePath) {
 		this.showImage(imagePath);
 		this.showInfo();
 	}
 
 	private void showImage(String imagePath){
+	    this.imagePath = imagePath;
 		this.setBorder(BorderFactory.createLineBorder(Color.black));
 		this.imageIcon = new ImageIcon(imagePath);
 		this.image = this.imageIcon.getImage();
@@ -223,6 +231,7 @@ class ResultPanel extends JPanel{
 		this.resultMileage = new JLabel("Mileage: ");
 		this.resultYear = new JLabel("Year: ");
 		this.resultPrice = new JLabel("Price: ");
+		this.number = new JLabel();
 		this.checkButton.setPreferredSize(new Dimension(200,50));
 		this.resultPrice.setPreferredSize(new Dimension(100,50));
 		this.resultLocation.setPreferredSize(new Dimension(150,50));
@@ -242,16 +251,37 @@ class ResultPanel extends JPanel{
 		this.add(this.checkButton);
 	}
 
+	protected void removeCheckButton(){
+	    this.remove(this.checkButton);
+    }
+
 	private void addListeners(){
-		this.checkButton.addActionListener((e -> {DetailTest detailTest = new DetailTest();}));
+		this.checkButton.addActionListener((e -> {DetailTest detailTest = new DetailTest( this);}));
 	}
 }
 
 //This class is for test only
 class DetailTest extends JFrame{
-	DetailTest(){
-		this.setSize(400,300);
-		this.setLocation(790,380);
-		this.setVisible(true);
+    ResultPanel carDetail;
+	DetailTest(ResultPanel result){
+		this.showDetail(result);
 	}
+
+	private void showDetail(ResultPanel result){
+        this.setTitle(result.number.getText());
+        this.setSize(400,300);
+        this.setLocation(790,380);
+        this.carDetail = new ResultPanel(result.imagePath);
+        this.carDetail.resultPrice = result.resultPrice;
+        this.carDetail.resultCondition = result.resultCondition;
+        this.carDetail.number = result.number;
+        this.carDetail.resultMake = result.resultMake;
+        this.carDetail.resultLocation = result.resultLocation;
+        this.carDetail.resultMileage = result.resultMileage;
+        this.carDetail.resultYear = result.resultYear;
+        this.carDetail.add(this.carDetail.number);
+        this.carDetail.removeCheckButton();
+        this.add(this.carDetail);
+        this.setVisible(true);
+    }
 }
