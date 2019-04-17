@@ -9,6 +9,7 @@ import javax.swing.*;
 
 public class InventorySearch extends InventorySearchBuild {
 	String dealerName;
+	Inventory inventory;
 	
 	public InventorySearch(String dealerName) {
 		super();
@@ -143,6 +144,94 @@ public class InventorySearch extends InventorySearchBuild {
         westScrollPane.getVerticalScrollBar().setUnitIncrement(15);
         getContentPane().add(westScrollPane, BorderLayout.WEST);
 	}
+	
+	/*
+	get user's filter search result and save it on filtercontent
+	*/
+	public Inventory getFilterValue() {
+		FilterContent filtercontent=new FilterContent();
+		ArrayList<String> category=new ArrayList<>();
+		ArrayList<String>make=new ArrayList<>();
+		ArrayList<String>model=new ArrayList<>();
+		ArrayList<String>type=new ArrayList<>();
+		ArrayList<String>mileage=new ArrayList<>();
+		ArrayList<String>seatCount=new ArrayList<>();
+		//Category
+		while(true) {
+			if(bottonNew.isSelected()) {
+				category.add("new");
+			}else if(bottonUsed.isSelected()) {
+				category.add("used");
+			}
+			filtercontent.setCategory(category);
+			//Make
+			make.add((String)JCBMake.getSelectedItem());
+			filtercontent.setMake(make);
+			//Model
+			model.add((String)JCBModel.getSelectedItem());
+			filtercontent.setModel(model);
+			//Type
+			type.add((String)JCBType.getSelectedItem());
+			filtercontent.setType(type);
+			//year
+			filtercontent.setLowYear(Integer.valueOf(JCBYear1.getSelectedItem().toString()));
+			filtercontent.setHighYear(Integer.valueOf(JCBYear2.getSelectedItem().toString()));
+			//price
+			filtercontent.setLowPrice(Double.valueOf(JCBPrice1.getSelectedItem().toString()));
+			filtercontent.setHighPrice(Double.valueOf(JCBPrice2.getSelectedItem().toString()));
+			//Mileage
+			mileage.add((String)JCBMileage1.getSelectedItem());
+			filtercontent.setMileage(mileage);
+			//Seat Count
+			seatCount.add((String)JCBSeatCount.getSelectedItem());
+			filtercontent.setSeatCount(seatCount);
+			//verify year filer validation
+			if(filtercontent.getLowYear()>filtercontent.getHighYear()) {
+				YearErrorMessage();
+				
+			}
+			//verify price filter validation
+			if(filtercontent.getLowPrice()>filtercontent.getHighPrice()) {
+				PriceErrorMessage();
+				
+			}
+		}
+	}
+	//show YearErrorMessage if year range is not valid
+	public void YearErrorMessage() {
+		String message=" Please enter a valid year range!";
+		JOptionPane.showMessageDialog(new JFrame(), message,"Dialog",JOptionPane.ERROR_MESSAGE);
+	}
+	//show PriceErrorMessage if price range is not valid
+	public void PriceErrorMessage() {
+		String message=" Please enter a valid price range!";
+		JOptionPane.showMessageDialog(new JFrame(), message,"Dialog",JOptionPane.ERROR_MESSAGE);
+		
+	}
+	//show NoMatchingResultErrorMessage if there is no matching search result
+	public void NoMatchingResultErrorMessage() {
+		String message="Sorry, no matching search result found!";
+		JOptionPane.showMessageDialog(new JFrame(), message,"Dialog",JOptionPane.ERROR_MESSAGE);
+	}
+	
+	//add actionListener to JBSearch
+	public void setActionListener() {
+		JBSearch.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				Inventory searchResult=getFilterValue();
+				//*****need a function to apply searchResult to central panel*****
+				
+				//if there is no matching search result
+				if(searchResult.getVehicles().size()==0) {
+					NoMatchingResultErrorMessage();
+				}
+				
+			}	
+		});
+	}
+			
 	
 	public void buildCentralPanel() {
 		centerPanel.setBorder(BorderFactory.createTitledBorder("Results"));
