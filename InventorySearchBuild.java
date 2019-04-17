@@ -33,6 +33,7 @@ public class InventorySearchBuild extends JFrame {
     protected JTextField JTFZipcode;
     
     protected JButton JBBack, JBPreviousPage, JBNextPage, JBSearch;
+    protected Inventory inventory;
     
     protected InventorySearchBuild() {
     	this.setSize(2000, 1000);
