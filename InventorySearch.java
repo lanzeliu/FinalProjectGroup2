@@ -326,8 +326,7 @@ public class InventorySearch extends InventorySearchBuild {
                 } else if (JCBSortBy.getSelectedItem().equals("Price: Highest")) {
                     sortedinventory = vehicleService.Sort(SortType.PRICE_DSC, inventory);
                 } else if (JCBSortBy.getSelectedItem().equals("Year: Newest")) {
-                    sortedinventory = vehicleService.Sort(SortType.YEAR_DSC, inventory);
-                    System.out.println(sortedinventory.getVehicles().size());
+                    sortedinventory = vehicleService.Sort(SortType.YEAR_DSC, inventory)；
                 } else if (JCBSortBy.getSelectedItem().equals("Year: Oldest")) {
                     sortedinventory = vehicleService.Sort(SortType.YEAR_ASC, inventory);
                 } else if (JCBSortBy.getSelectedItem().equals("Mileage: Lowest")) {
