@@ -3,8 +3,8 @@ package finalprojectgroup2test2;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.IOException;
 import java.util.ArrayList;
-import java.util.List;
 
 import javax.swing.*;
 
@@ -301,6 +301,33 @@ public class InventorySearch extends InventorySearchBuild {
 	
 	//add actionListener to JBSearch
 	public void setActionListener() {
+
+		JCBSortBy.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				Inventory sortedinventory = null;
+				if (JCBSortBy.getSelectedItem().equals("Price: Lowest")) {
+					//TODO: need to use backend vehicleService package to get vehicleServiceSort Imp and SortType
+					sortedinventory = vehicleService.Sort(SortType.PRICE_ASC, inventory);
+				} else if (JCBSortBy.getSelectedItem().equals("Price: Highest")) {
+					sortedinventory = vehicleService.Sort(SortType.PRICE_DSC, inventory);
+				} else if (JCBSortBy.getSelectedItem().equals("Year: Newest")) {
+					sortedinventory = vehicleService.Sort(SortType.YEAR_DSC, inventory);
+					System.out.println(sortedinventory.getVehicles().size());
+				} else if (JCBSortBy.getSelectedItem().equals("Year: Oldest")) {
+					sortedinventory = vehicleService.Sort(SortType.YEAR_ASC, inventory);
+				} else if (JCBSortBy.getSelectedItem().equals("Mileage: Lowest")) {
+					sortedinventory = vehicleService.Sort(SortType.MILEAGE_ASC, inventory);
+				} else if (JCBSortBy.getSelectedItem().equals("Mileage: Highest")) {
+					sortedinventory = vehicleService.Sort(SortType.MILEAGE_DSC, inventory);
+				} else if (JCBSortBy.getSelectedItem().equals("Distance: Nearest(Default)")) {
+					sortedinventory = vehicleService.Sort(SortType.DISTANCE_ASC, inventory);
+				}
+
+				showResults(sortedinventory.getVehicles());
+			}
+		});
+
 		JBSearch.addActionListener(new ActionListener() {
 
 			@Override
@@ -314,14 +341,21 @@ public class InventorySearch extends InventorySearchBuild {
 				}
 			}	
 		});
-	}
-	/*
-	test if collection works
 
-	public void addListeners(){
-		this.JBSearch.addActionListener(e -> {this.showResults(this.vehiclesCollection);});
+		JBBack.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+					try {
+						//TODO define what OlderFrame we want to show
+						new OlderFrame().setVisible(true);
+					} catch (IOException e1) {
+						System.out.println("Error in Going to Home");
+						e1.printStackTrace();
+					}
+					dispose();
+			}
+		});
 	}
-	*/
 	
 	
 	public void buildCentralPanel() {
