@@ -14,7 +14,7 @@ private String vehicleId;
 	
 	private String seatCount;
 	
-	private String milaege;
+	private String mileage;
 	
 	private String price;
 	
@@ -78,12 +78,12 @@ private String vehicleId;
 		this.seatCount = seatCount;
 	}
 
-	public String getMilaege() {
-		return milaege;
+	public String getMileage() {
+		return mileage;
 	}
 
-	public void setMilaege(String milaege) {
-		this.milaege = milaege;
+	public void setMileage(String mileage) {
+		this.mileage = mileage;
 	}
 
 	public String getPrice() {

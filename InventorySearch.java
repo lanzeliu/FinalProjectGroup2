@@ -11,13 +11,13 @@ import javax.swing.*;
 
 
 public class InventorySearch extends InventorySearchBuild {
-	String Dealerid;
+	String dealerID;
 	Inventory inventory;
+	ArrayList<Vehicle> vehiclesCollection;
 	
-	
-	public InventorySearch(String Dealerid) {
+	public InventorySearch(String dealerID) {
 		super();
-		this.Dealerid = Dealerid;
+		this.dealerID = dealerID;
 		this.buildUI();
 	}
 	
@@ -26,7 +26,7 @@ public class InventorySearch extends InventorySearchBuild {
 		this.buildNorthPanel();
 		this.createWestPanelComponents();
 		this.defineWestPanelComponents();
-		this.initializationWestPanelButtonCodition();
+		this.initializationWestPanelButtonCondition();
 		this.buildWestPanel();
 		this.buildCentralPanel();
 		this.defineSouthPanelComponents();
@@ -37,7 +37,7 @@ public class InventorySearch extends InventorySearchBuild {
 		Vehicle v1 = new Vehicle();
 		v1.setCategory("New");
 		v1.setMake("Audi");
-		v1.setMilaege("0");
+		v1.setMileage("0");
 		v1.setModel("A4");
 		v1.setPrice("$42,492");
 		v1.setSeatCount("4");
@@ -49,7 +49,7 @@ public class InventorySearch extends InventorySearchBuild {
 		Vehicle v2 = new Vehicle();
 		v2.setCategory("New");
 		v2.setMake("BMW");
-		v2.setMilaege("0");
+		v2.setMileage("0");
 		v2.setModel("X6");
 		v2.setPrice("$62,832");
 		v2.setSeatCount("4");
@@ -58,7 +58,8 @@ public class InventorySearch extends InventorySearchBuild {
 		v2.setYear("2019");
 		v2.setZipCode("WA 98168");
 		
-		ArrayList<Vehicle> vehiclesCollection = new ArrayList<>();
+//		ArrayList<Vehicle> vehiclesCollection = new ArrayList<>();
+		vehiclesCollection = new ArrayList<>();
 		vehiclesCollection.add(v1);
 		vehiclesCollection.add(v2);
 		
@@ -92,7 +93,7 @@ public class InventorySearch extends InventorySearchBuild {
 	}
 	
 	
-public void createWestPanelComponents() {
+	public void createWestPanelComponents() {
 		
         labelCategory = new JLabel("Category");
         labelEmpty = new JLabel("");
@@ -110,13 +111,13 @@ public void createWestPanelComponents() {
 	}
 
 
-public void defineWestPanelComponents() {
+	public void defineWestPanelComponents() {
 	for (int i=0; i<inventory.getVehicles().size(); i++) {
 		makeSetItems.add(inventory.getVehicle(i).getMake());
 		modelSetItems.add(inventory.getVehicle(i).getModel());
 		typeSetItems.add(inventory.getVehicle(i).getType());
 		yearSetItems.add(inventory.getVehicle(i).getYear());
-		mileageSetItems.add(inventory.getVehicle(i).getMilaege());
+		mileageSetItems.add(inventory.getVehicle(i).getMileage());
 		seatCountItems.add(inventory.getVehicle(i).getSeatCount());
 	}
 	
@@ -130,19 +131,19 @@ public void defineWestPanelComponents() {
 	JCBYear2 = new JComboBox(yearSetItems.toArray());
 	JCBYear2.addItem("--Please choose a end year");
 	JCBMileage1 = new JComboBox(mileageSetItems.toArray());
-	JCBMileage1.addItem("--Please choose a prefered mileage");
+	JCBMileage1.addItem("--Please choose a preferred mileage");
 	JCBPrice1 = new JComboBox(minPriceFilterResults);
 	JCBPrice1.addItem("--Please choose a start price");
 	JCBPrice2 = new JComboBox(maxPriceFilterResults);
 	JCBPrice2.addItem("--Please choose a end price");
 	JCBMake = new JComboBox(makeSetItems.toArray());
-	JCBMake.addItem("--Please choose a prefered make");
+	JCBMake.addItem("--Please choose a preferred make");
 	JCBModel = new JComboBox(modelSetItems.toArray());
-	JCBModel.addItem("--Please choose a prefered model");
+	JCBModel.addItem("--Please choose a preferred model");
 	JCBType = new JComboBox(typeSetItems.toArray());
-	JCBType.addItem("--Please choose a prefered type");
+	JCBType.addItem("--Please choose a preferred type");
 	JCBSeatCount = new JComboBox(seatCountItems.toArray());
-	JCBSeatCount.addItem("--Please choose a prefered seat count");
+	JCBSeatCount.addItem("--Please choose a preferred seat count");
 }
 
 
@@ -190,9 +191,8 @@ public void defineWestPanelComponents() {
         
         westPanel.add(Box.createRigidArea(new Dimension(0, 10)));
         westPanel.add(JBSearch);
-        
         westPanel.setBorder(BorderFactory.createTitledBorder("Filter Results"));
-
+		//this.addListeners(); test if collection works
         /*
         when the window is max, westScrollPanel will contain all filters(does not need to scroll down)
         with height of 764, the height may be changed when adding new filters
@@ -211,7 +211,7 @@ public void defineWestPanelComponents() {
         getContentPane().add(westScrollPane, BorderLayout.WEST);
 	}
 	
-	public void initializationWestPanelButtonCodition() {
+	public void initializationWestPanelButtonCondition() {
 		bottonNew.setSelected(true);
 		bottonUsed.setSelected(true);
 		JCBYear1.setSelectedIndex(JCBYear1.getItemCount()-1);
@@ -307,46 +307,49 @@ public void defineWestPanelComponents() {
 			public void actionPerformed(ActionEvent e) {
 				Inventory searchResult=getFilterValue();
 				//*****need a function to apply searchResult to central panel*****
-				
+
 				//if there is no matching search result
 				if(searchResult.getVehicles().size()==0) {
 					NoMatchingResultErrorMessage();
 				}
-				
 			}	
 		});
 	}
-	
-	
-	
-	
+	/*
+	test if collection works
+
+	public void addListeners(){
+		this.JBSearch.addActionListener(e -> {this.showResults(this.vehiclesCollection);});
+	}
+	*/
 	
 	
 	public void buildCentralPanel() {
-		centerPanel.setBorder(BorderFactory.createTitledBorder("Results"));
+		this.centerPanel.setBorder(BorderFactory.createTitledBorder("Results"));
 		//centerPanel.setPreferredSize(new Dimension(getWidth(),764));
-        centerPanel.setLayout(new BoxLayout(centerPanel, BoxLayout.Y_AXIS));
+        this.centerPanel.setLayout(new BoxLayout(this.centerPanel, BoxLayout.Y_AXIS));
 
-        //display results test
-        this.resultPanelList = new ArrayList<>();
-		for(int j=0;j<30;j++) {
-			for (int i = 1; i < 4; i++) {
-				String imagePath = i + ".jpeg";
-				ResultPanel resultPanel = new ResultPanel(imagePath);
-                this.resultPanelList.add(resultPanel);
-                resultPanel.number.setText(Integer.toString(this.resultPanelList.size()));
-				this.centerPanel.add(this.resultPanelList.get(this.resultPanelList.size()-1));
-			}
+		this.centerPanelOut = new JPanel();
+		this.centerPanelOut.setLayout(new BorderLayout());
+		this.centerPanelOut.add(this.centerPanel, BorderLayout.NORTH);
+		this.centerScrollPane = new JScrollPane(this.centerPanelOut, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+		this.centerScrollPane.getVerticalScrollBar().setUnitIncrement(15);
+		getContentPane().add(this.centerScrollPane, BorderLayout.CENTER);
+	}
+
+	//Show results in centerPanel
+	private void showResults(ArrayList<Vehicle> vehiclesCollection){
+		this.centerPanel.removeAll();
+		for(int i=0; i<vehiclesCollection.size(); i++){
+			ResultPanel resultPanel = new ResultPanel(vehiclesCollection.get(i).getVehicleId() + ".jpeg");
+			resultPanel.resultYear.setText(resultPanel.resultYear.getText() + vehiclesCollection.get(i).getYear());
+			resultPanel.resultMileage.setText(resultPanel.resultMileage.getText() + vehiclesCollection.get(i).getMileage());
+			resultPanel.resultMake.setText(resultPanel.resultMake.getText() + vehiclesCollection.get(i).getMake());
+			resultPanel.resultPrice.setText(resultPanel.resultPrice.getText() + vehiclesCollection.get(i).getPrice());
+			resultPanel.vehicleID.setText(vehiclesCollection.get(i).getVehicleId());
+			this.centerPanel.add(resultPanel);
 		}
-
-
-
-		centerPanelOut = new JPanel();
-		centerPanelOut.setLayout(new BorderLayout());
-		centerPanelOut.add(centerPanel, BorderLayout.NORTH);
-		centerScrollPane = new JScrollPane(centerPanel, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-		centerScrollPane.getVerticalScrollBar().setUnitIncrement(15);
-		getContentPane().add(centerScrollPane, BorderLayout.CENTER);
+		this.centerPanel.revalidate();
 	}
 	
 	public void defineSouthPanelComponents() {
@@ -366,11 +369,12 @@ public void defineWestPanelComponents() {
 
 }
 
+//This class is to show results in centerPanel
 class ResultPanel extends JPanel{
 
 	ImageIcon imageIcon;
 	Image image;
-	JLabel resultPrice, resultLocation, resultMake, resultYear, resultMileage, resultCondition, number;
+	JLabel resultPrice, resultLocation, resultMake, resultYear, resultMileage, resultCondition, vehicleID;
 	JButton checkButton;
     String imagePath;
 	ResultPanel(String imagePath) {
@@ -397,6 +401,7 @@ class ResultPanel extends JPanel{
 	}
 
 	private void createComponents(){
+		this.setBorder(BorderFactory.createTitledBorder(""));
 		this.checkButton = new JButton("Check Availability");
 		this.resultCondition = new JLabel("Condition: ");
 		this.resultLocation = new JLabel("Location: ");
@@ -404,7 +409,7 @@ class ResultPanel extends JPanel{
 		this.resultMileage = new JLabel("Mileage: ");
 		this.resultYear = new JLabel("Year: ");
 		this.resultPrice = new JLabel("Price: ");
-		this.number = new JLabel();
+		this.vehicleID = new JLabel();
 		this.checkButton.setPreferredSize(new Dimension(200,50));
 		this.resultPrice.setPreferredSize(new Dimension(100,50));
 		this.resultLocation.setPreferredSize(new Dimension(150,50));
@@ -441,18 +446,18 @@ class DetailTest extends JFrame{
 	}
 
 	private void showDetail(ResultPanel result){
-        this.setTitle(result.number.getText());
+        this.setTitle(result.vehicleID.getText());
         this.setSize(400,300);
         this.setLocation(790,380);
         this.carDetail = new ResultPanel(result.imagePath);
-        this.carDetail.resultPrice = result.resultPrice;
-        this.carDetail.resultCondition = result.resultCondition;
-        this.carDetail.number = result.number;
-        this.carDetail.resultMake = result.resultMake;
-        this.carDetail.resultLocation = result.resultLocation;
-        this.carDetail.resultMileage = result.resultMileage;
-        this.carDetail.resultYear = result.resultYear;
-        this.carDetail.add(this.carDetail.number);
+        this.carDetail.resultPrice.setText(result.resultPrice.getText());
+        this.carDetail.resultCondition.setText(result.resultCondition.getText());
+        this.carDetail.vehicleID.setText(result.vehicleID.getText());
+        this.carDetail.resultMake.setText(result.resultMake.getText());
+        this.carDetail.resultLocation.setText(result.resultLocation.getText());
+        this.carDetail.resultMileage.setText(result.resultMileage.getText());
+        this.carDetail.resultYear.setText(result.resultYear.getText());
+        this.carDetail.add(this.carDetail.vehicleID);
         this.carDetail.removeCheckButton();
         this.add(this.carDetail);
         this.setVisible(true);
