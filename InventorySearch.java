@@ -264,16 +264,16 @@ public class InventorySearch extends InventorySearchBuild implements InventorySe
             filtercontent.setSeatCount((String)JCBSeatCount.getSelectedItem());
             //verify year filer validation
             Integer startYear=Integer.valueOf(filtercontent.getLowYear());
-			Integer endYear=Integer.valueOf(filtercontent.getHighYear());
-			if(startYear>endYear) {
-				YearErrorMessage();
-			}
+	    Integer endYear=Integer.valueOf(filtercontent.getHighYear());
+	    if(startYear>endYear) {
+		    YearErrorMessage();
+	    }
             //verify price filter validation
             Double startPrice=Double.valueOf(filtercontent.getLowPrice());
-			Double endPrice=Double.valueOf(filtercontent.getHighPrice());		
-			if(startPrice>endPrice) {
-				PriceErrorMessage();				
-			}
+	    Double endPrice=Double.valueOf(filtercontent.getHighPrice());		
+	    if(startPrice>endPrice) {
+		    PriceErrorMessage();				
+	    }
         }
     }
     //show YearErrorMessage if year range is not valid
@@ -296,14 +296,14 @@ public class InventorySearch extends InventorySearchBuild implements InventorySe
             public void actionPerformed(ActionEvent e) {
                 FilterContent searchResult = getFilterValue();
                 min_year = searchResult.getLowYear();
-				max_year=searchResult.getHighYear();
-				max_mileage=searchResult.getMileage();
-				min_price=searchResult.getLowPrice();
-				max_price=searchResult.getHighPrice();
-				model=searchResult.getModel();
-				make=searchResult.getMake();
-				type=searchResult.getType();
-				seat_count=searchResult.getSeatCount();
+		max_year=searchResult.getHighYear();
+		max_mileage=searchResult.getMileage();
+		min_price=searchResult.getLowPrice();
+		max_price=searchResult.getHighPrice();
+		model=searchResult.getModel();
+		make=searchResult.getMake();
+		type=searchResult.getType();
+		seat_count=searchResult.getSeatCount();
                 this.search_inventory(vehicleCollection,inventory,min_year,max_year,max_mileage,min_price,max_price,model,make,type,seat_count);
 
             }
