@@ -263,14 +263,14 @@ public class InventorySearch extends InventorySearchBuild implements InventorySe
             //Seat Count
             filtercontent.setSeatCount((String)JCBSeatCount.getSelectedItem());
             //verify year filer validation
-            Integer startYear=Integer.valueOf(filtercontent.getLowYear());
-	    Integer endYear=Integer.valueOf(filtercontent.getHighYear());
+            int startYear=Integer.valueOf(filtercontent.getLowYear());
+	    int endYear=Integer.valueOf(filtercontent.getHighYear());
 	    if(startYear>endYear) {
 		    YearErrorMessage();
 	    }
             //verify price filter validation
-            Double startPrice=Double.valueOf(filtercontent.getLowPrice());
-	    Double endPrice=Double.valueOf(filtercontent.getHighPrice());		
+            double startPrice=Double.valueOf(filtercontent.getLowPrice());
+	    double endPrice=Double.valueOf(filtercontent.getHighPrice());		
 	    if(startPrice>endPrice) {
 		    PriceErrorMessage();				
 	    }
