@@ -233,53 +233,47 @@ public class InventorySearch extends InventorySearchBuild {
     /*
     get user's filter search result and save it on filtercontent
     */
-    public Inventory getFilterValue() {
+    public Filtercontent getFilterValue() {
         FilterContent filtercontent=new FilterContent();
-        ArrayList<String> category=new ArrayList<>();
-        ArrayList<String>make=new ArrayList<>();
-        ArrayList<String>model=new ArrayList<>();
-        ArrayList<String>type=new ArrayList<>();
-        ArrayList<String>mileage=new ArrayList<>();
-        ArrayList<String>seatCount=new ArrayList<>();
-        //Category
         while(true) {
+            //Category
             if(bottonNew.isSelected()) {
-                category.add("new");
-            }else if(bottonUsed.isSelected()) {
-                category.add("used");
-            }
-            filtercontent.setCategory(category);
+				filtercontent.setCategory("new");
+			}else if(bottonUsed.isSelected()) {
+				filtercontent.setCategory("used");
+			} 
             //Make
-            make.add((String)JCBMake.getSelectedItem());
-            filtercontent.setMake(make);
+            filtercontent.setMake((String)JCBMake.getSelectedItem());
             //Model
-            model.add((String)JCBModel.getSelectedItem());
-            filtercontent.setModel(model);
+            filtercontent.setModel((String)JCBModel.getSelectedItem());
             //Type
-            type.add((String)JCBType.getSelectedItem());
-            filtercontent.setType(type);
+            filtercontent.setType((String)JCBType.getSelectedItem());
             //year
-            filtercontent.setLowYear(Integer.valueOf(JCBYear1.getSelectedItem().toString()));
-            filtercontent.setHighYear(Integer.valueOf(JCBYear2.getSelectedItem().toString()));
+            //start year
+            filtercontent.setLowYear((String)JCBYear1.getSelectedItem());
+            //end year
+            filtercontent.setHighYear((String)JCBYear2.getSelectedItem());
             //price
-            filtercontent.setLowPrice(Double.valueOf(JCBPrice1.getSelectedItem().toString()));
-            filtercontent.setHighPrice(Double.valueOf(JCBPrice2.getSelectedItem().toString()));
+            //start price
+            filtercontent.setLowPrice((String)JCBPrice1.getSelectedItem());
+            //end price
+            filtercontent.setHighPrice((String)JCBPrice2.getSelectedItem());
             //Mileage
-            mileage.add((String)JCBMileage1.getSelectedItem());
-            filtercontent.setMileage(mileage);
+            filtercontent.setMileage((String)JCBMileage1.getSelectedItem());
             //Seat Count
-            seatCount.add((String)JCBSeatCount.getSelectedItem());
-            filtercontent.setSeatCount(seatCount);
+            filtercontent.setSeatCount((String)JCBSeatCount.getSelectedItem());
             //verify year filer validation
-            if(filtercontent.getLowYear()>filtercontent.getHighYear()) {
-                YearErrorMessage();
-
-            }
+            Integer startYear=Integer.valueOf(filtercontent.getLowYear());
+			Integer endYear=Integer.valueOf(filtercontent.getHighYear());
+			if(startYear>endYear) {
+				YearErrorMessage();
+			}
             //verify price filter validation
-            if(filtercontent.getLowPrice()>filtercontent.getHighPrice()) {
-                PriceErrorMessage();
-
-            }
+            Double startPrice=Double.valueOf(filtercontent.getLowPrice());
+			Double endPrice=Double.valueOf(filtercontent.getHighPrice());		
+			if(startPrice>endPrice) {
+				PriceErrorMessage();				
+			}
         }
     }
     //show YearErrorMessage if year range is not valid
@@ -291,14 +285,8 @@ public class InventorySearch extends InventorySearchBuild {
     public void PriceErrorMessage() {
         String message=" Please enter a valid price range!";
         JOptionPane.showMessageDialog(new JFrame(), message,"Dialog",JOptionPane.ERROR_MESSAGE);
-
     }
-    //show NoMatchingResultErrorMessage if there is no matching search result
-    public void NoMatchingResultErrorMessage() {
-        String message="Sorry, no matching search result found!";
-        JOptionPane.showMessageDialog(new JFrame(), message,"Dialog",JOptionPane.ERROR_MESSAGE);
-    }
-
+    
     //add actionListener to JBSearch
     public void setActionListener() {
 
@@ -306,13 +294,18 @@ public class InventorySearch extends InventorySearchBuild {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                Inventory searchResult=getFilterValue();
-                //*****need a function to apply searchResult to central panel*****
+                FilterContent searchResult = getFilterValue();
+                min_year = searchResult.getLowYear();
+				max_year=searchResult.getHighYear();
+				max_mileage=searchResult.getMileage();
+				min_price=searchResult.getLowPrice();
+				max_price=searchResult.getHighPrice();
+				model=searchResult.getModel();
+				make=searchResult.getMake();
+				type=searchResult.getType();
+				seat_count=searchResult.getSeatCount();
+                this.search_inventory(vehicleCollection,inventory,min_year,max_year,max_mileage,min_price,max_price,model,make,type,seat_count);
 
-                //if there is no matching search result
-                if(searchResult.getVehicles().size()==0) {
-                    NoMatchingResultErrorMessage();
-                }
             }
         });
 
