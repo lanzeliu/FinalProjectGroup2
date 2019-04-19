@@ -10,7 +10,7 @@ import javax.swing.*;
 
 
 
-public class InventorySearch extends InventorySearchBuild {
+public class InventorySearch extends InventorySearchBuild implements InventorySearcher{
     String dealerID;
     Inventory inventory;
     ArrayList<Vehicle> vehiclesCollection;
