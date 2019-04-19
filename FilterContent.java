@@ -1,86 +1,103 @@
 package finalprojectgroup2test2;
 
-import java.util.ArrayList;
-
 public class FilterContent {
+	private String category;
+	private String make; 
+	private String model;
+	private String type;
 	
-	private ArrayList<String> category;
-	private ArrayList<String> make; 
-	private ArrayList<String> model;
-	private ArrayList<String> type;
+	private String mileage;
+	private String seatCount;
 	
-	private ArrayList<String> mileage;
-	private ArrayList<String> seatCount;
-	
-	private double highPrice;
-	private double lowPrice; 
-	private int highYear;
-	private int lowYear;
+	private String highPrice;
+	private String lowPrice; 
+	private String highYear;
+	private String lowYear;
 	
 	public FilterContent() {
 		}
 	
-	public ArrayList<String>getCategory() {
+	//category
+	public String getCategory() {
 	return category;
 		}
-	public void setCategory(ArrayList<String> category) {
+	public void setCategory(String category) {
 	this.category = category;
 		}
-	public ArrayList<String> getMake(){
+	
+	//make
+	public String getMake(){
 	return make;
 		}
-	public void setMake(ArrayList<String> make) {
+	public void setMake(String make) {
 	this.make = make;
 		}
-	public ArrayList<String> getModel(){
+	
+	//model
+	public String getModel(){
 	return model;
 		}
-	public void setModel(ArrayList<String> model) {
+	public void setModel(String model) {
 	this.model = model;
 		}
-	public ArrayList<String> getType(){
+	
+	//type
+	public String getType(){
 	return type;
 		}
-	public void setType(ArrayList<String> type) {
+	public void setType(String type) {
 	this.type = type;
 		}
-	public double getHighPrice() {
+	
+	//highPrice
+	public String getHighPrice() {
 	return highPrice;
 		}
-	public void setHighPrice(double highPrice) {
+	public void setHighPrice(String highPrice) {
 	this.highPrice = highPrice;
 		}
-	public double getLowPrice() {
+	
+	//lowPrice
+	public String getLowPrice() {
 	return lowPrice;
 		}
-	public void setLowPrice(double lowPrice) {
+	public void setLowPrice(String lowPrice) {
 	this.lowPrice = lowPrice;
 		}
-	public int getHighYear() {
+	
+	//highYeat
+	public String getHighYear() {
 	return highYear;
 		}
-	public void setHighYear(int highYear) {
+	public void setHighYear(String highYear) {
 	this.highYear = highYear;
 		}
-	public int getLowYear() {
+	
+	//lowYear
+	public String getLowYear() {
 	return lowYear;
 		}
-	public void setLowYear(int lowYear) {
+	public void setLowYear(String lowYear) {
 	this.lowYear = lowYear;
 		}
-	//
-	public ArrayList<String> getMileage() {
+	
+	//mileage
+	public String getMileage() {
 	return mileage;
 		}
-	public void setMileage(ArrayList<String> mileage) {
+	public void setMileage(String mileage) {
 	this.mileage = mileage;
 		}
 	
-	public ArrayList<String> getSeatCount() {
+	//seatCount
+	public String getSeatCount() {
 	return seatCount;
 		}
-	public void setSeatCount(ArrayList<String> seatCount) {
+	public void setSeatCount(String seatCount) {
 	this.seatCount = seatCount;
 		}
+
+	
+	
 
 }
