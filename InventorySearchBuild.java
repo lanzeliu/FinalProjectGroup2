@@ -39,6 +39,7 @@ public class InventorySearchBuild extends JFrame {
 			typeSetItems = new TreeSet<>(),yearSetItems = new TreeSet<>(), mileageSetItems = new TreeSet<>(), seatCountItems = new TreeSet<>();
     
     protected String[] minPriceFilterResults, maxPriceFilterResults;
+    protected String category,min_year,max_year,max_mileage,min_price,max_price,model,make,type,seat_count;
     
     protected InventorySearchBuild() {
     	this.setSize(2000, 1000);
