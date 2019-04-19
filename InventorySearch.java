@@ -295,6 +295,7 @@ public class InventorySearch extends InventorySearchBuild implements InventorySe
             @Override
             public void actionPerformed(ActionEvent e) {
                 FilterContent searchResult = getFilterValue();
+		category=searchResult.getCategory();
                 min_year = searchResult.getLowYear();
 		max_year=searchResult.getHighYear();
 		max_mileage=searchResult.getMileage();
@@ -304,7 +305,7 @@ public class InventorySearch extends InventorySearchBuild implements InventorySe
 		make=searchResult.getMake();
 		type=searchResult.getType();
 		seat_count=searchResult.getSeatCount();
-                this.search_inventory(vehicleCollection,inventory,min_year,max_year,max_mileage,min_price,max_price,model,make,type,seat_count);
+                this.search_inventory(vehicleCollection,inventory,category,min_year,max_year,max_mileage,min_price,max_price,model,make,type,seat_count);
 
             }
         });
