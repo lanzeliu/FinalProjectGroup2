@@ -8,11 +8,11 @@ public class ModelSetItems {
 	
 	
 	
-	public ModelSetItems() {
+	private ModelSetItems() {
 		
 	}
 	
-	public ArrayList<String> getModelItems(ArrayList<Vehicle> vehiclesCollection, String Make) {
+	private ArrayList<String> getModelItems(ArrayList<Vehicle> vehiclesCollection, String Make) {
 		ArrayList<String> modelItemsList = new ArrayList<>();
 		
 		if (Make.equals("")) return modelItemsList;

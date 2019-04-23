@@ -3,25 +3,29 @@ package finalprojectgroup2test2;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.IOException;
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
-
+import java.util.Collections;
+import java.util.Scanner;
+import database.DatabaseConnection;
+import dto.*;
 import javax.swing.*;
 
 
 
-public class InventorySearch extends InventorySearchBuild implements InventorySearcher{
-    String dealerID;
-    Inventory inventory;
-    ArrayList<Vehicle> vehiclesCollection;
+public class InventorySearch extends InventorySearchBuild{
+    private String dealerID;
+    private Inventory inventory;
+    private ArrayList<Vehicle> vehiclesCollection;
 
-    public InventorySearch(String dealerID) {
+    private InventorySearch(String dealerID) throws FileNotFoundException {
         super();
         this.dealerID = dealerID;
         this.buildUI();
     }
 
-    public void buildUI() {
+    private void buildUI() throws FileNotFoundException {
         this.inventoryConnection();
         this.buildNorthPanel();
         this.createWestPanelComponents();
@@ -31,58 +35,37 @@ public class InventorySearch extends InventorySearchBuild implements InventorySe
         this.buildCentralPanel();
         this.defineSouthPanelComponents();
         this.buildSouthPanel();
+        this.showResults(new DatabaseConnection().getVehiclesForDealer(this.dealerID));
     }
 
-    public void inventoryConnection() {
-        Vehicle v1 = new Vehicle();
-        v1.setCategory("New");
-        v1.setMake("Audi");
-        v1.setMileage("0");
-        v1.setModel("A4");
-        v1.setPrice("$42,492");
-        v1.setSeatCount("4");
-        v1.setType("Sedan");
-        v1.setVehicleId("V1");
-        v1.setYear("2019");
-        v1.setZipCode("WA 98168");
-
-        Vehicle v2 = new Vehicle();
-        v2.setCategory("New");
-        v2.setMake("BMW");
-        v2.setMileage("0");
-        v2.setModel("X6");
-        v2.setPrice("$62,832");
-        v2.setSeatCount("4");
-        v2.setType("SUV");
-        v2.setVehicleId("V2");
-        v2.setYear("2019");
-        v2.setZipCode("WA 98168");
-
-//		ArrayList<Vehicle> vehiclesCollection = new ArrayList<>();
-        vehiclesCollection = new ArrayList<>();
-        vehiclesCollection.add(v1);
-        vehiclesCollection.add(v2);
-
-        Inventory i = new Inventory("D1");
-        i.setVehicles(vehiclesCollection);
+    private void inventoryConnection() {
+//
+        Inventory i = new Inventory("D10");
+        i.setVehicles(new DatabaseConnection().getVehiclesForDealer(this.dealerID));
 
         this.inventory = i;
+        this.vehiclesCollection = new DatabaseConnection().getVehiclesForDealer(this.dealerID);
+        this.tempVehicles = this.vehiclesCollection;
     }
 
-    public void buildNorthPanel() {
+    private void buildNorthPanel() {
         //northPanel.setPreferredSize(new Dimension(500, 500));
         northPanel = new JPanel() {
             public void paintComponent(Graphics g) {
-                ImageIcon backImage = new ImageIcon("//users/liulanze/Downloads/2019 Spring NEU Seattle/JAVA OOP/Final Project/cover1.jpeg");
-                g.drawImage(backImage.getImage(), 0, 0, this.getSize().width, this.getSize().height, this);
+                //ImageIcon backImage = new ImageIcon("//users/liulanze/Downloads/2019 Spring NEU Seattle/JAVA OOP/Final Project/cover1.jpeg");
+                //g.drawImage(backImage.getImage(), 0, 0, this.getSize().width, this.getSize().height, this);
             }
         };
 
-        labelSortBy = new JLabel("Sort by:");
+
+        labelNorthTitle = new JLabel("Welcome to the inventory search page! This page shows the inventory from dealerID " + this.dealerID);
+
+        labelSortBy = new JLabel("                                                                          Sort by:");
         JCBSortBy = new JComboBox(new String[] {"Distance: Nearest(Default)", "Price: Lowest", "Price: Highest", "Year: Newest", "Year: Oldest", "Mileage: Lowest", "Mileage: Highest"});
 
         northPanel.setOpaque(true);
         northPanel.add(Box.createRigidArea(new Dimension(0, 10)));
+        northPanel.add(labelNorthTitle);
         northPanel.add(labelSortBy, BorderLayout.EAST);
         northPanel.add(JCBSortBy, BorderLayout.EAST);
 
@@ -93,7 +76,7 @@ public class InventorySearch extends InventorySearchBuild implements InventorySe
     }
 
 
-    public void createWestPanelComponents() {
+    private void createWestPanelComponents() {
 
         labelCategory = new JLabel("Category");
         labelEmpty = new JLabel("");
@@ -111,43 +94,76 @@ public class InventorySearch extends InventorySearchBuild implements InventorySe
     }
 
 
-    public void defineWestPanelComponents() {
-        for (int i=0; i<inventory.getVehicles().size(); i++) {
-            makeSetItems.add(inventory.getVehicle(i).getMake());
-            modelSetItems.add(inventory.getVehicle(i).getModel());
-            typeSetItems.add(inventory.getVehicle(i).getType());
-            yearSetItems.add(inventory.getVehicle(i).getYear());
-            mileageSetItems.add(inventory.getVehicle(i).getMileage());
-            seatCountItems.add(inventory.getVehicle(i).getSeatCount());
+    private void defineWestPanelComponents() throws FileNotFoundException {
+        YearSetItems getYearSetItems = new YearSetItems();
+        yearSetItems = getYearSetItems.getYearItems(this.vehiclesCollection, "","");
+        yearSetItems.add("--Please choose a year");
+
+
+        Scanner scanner;
+
+
+        File mileageFile = new File("MileageItems.txt");
+        scanner = new Scanner(mileageFile);
+        while(scanner.hasNextLine()){
+            mileageSetItems.add((int)Double.parseDouble(scanner.nextLine()));
         }
 
-        minPriceFilterResults = new String[] { "5,000", "10,000", "15,000", "20,000", "30,000", "40,000","50,000","100,000", "200,000" };
-        maxPriceFilterResults = new String[] { "200,000","100,000","50,000","40,000","30,000", "20,000", "15,000", "10,000", "5,000" };
+        File minPriceFile = new File("MinPriceItems.txt");
+        scanner = new Scanner(minPriceFile);
+        while(scanner.hasNextLine()){
+            minPriceFilterResults.add(scanner.nextLine());
+        }
+
+        File maxPriceFile = new File("MaxPriceItems.txt");
+        scanner = new Scanner(maxPriceFile);
+        while(scanner.hasNextLine()){
+            maxPriceFilterResults.add(scanner.nextLine());
+        }
+
+        /*File makeFile = new File("MakeItems.txt");
+        scanner = new Scanner(makeFile);
+        while(scanner.hasNextLine()){
+            makeSetItems.add(scanner.nextLine());
+        }*/
+
+        File typeFile = new File("TypeItems.txt");
+        scanner = new Scanner(typeFile);
+        while(scanner.hasNextLine()){
+            typeSetItems.add(scanner.nextLine());
+        }
+
+        File seatFile = new File("SeatFile.txt");
+        scanner = new Scanner(seatFile);
+        while(scanner.hasNextLine()){
+            seatCountItems.add(scanner.nextLine());
+        }
+
+
+        for (int i=0; i<inventory.getVehicles().size(); i++) {
+            if(!makeSetItems.contains(inventory.getVehicle(i).getMake())){
+                makeSetItems.add(inventory.getVehicle(i).getMake());
+            }
+        }
+        makeSetItems.add("--Please choose a preferred make");
+
 
         bottonNew = new JCheckBox("New");
         bottonUsed = new JCheckBox("Used");
         JCBYear1 = new JComboBox(yearSetItems.toArray());
-        JCBYear1.addItem("--Please choose a start year");
         JCBYear2 = new JComboBox(yearSetItems.toArray());
-        JCBYear2.addItem("--Please choose a end year");
         JCBMileage1 = new JComboBox(mileageSetItems.toArray());
-        JCBMileage1.addItem("--Please choose a preferred mileage");
-        JCBPrice1 = new JComboBox(minPriceFilterResults);
-        JCBPrice1.addItem("--Please choose a start price");
-        JCBPrice2 = new JComboBox(maxPriceFilterResults);
-        JCBPrice2.addItem("--Please choose a end price");
+        JCBPrice1 = new JComboBox(minPriceFilterResults.toArray());
+        JCBPrice2 = new JComboBox(maxPriceFilterResults.toArray());
         JCBMake = new JComboBox(makeSetItems.toArray());
-        JCBMake.addItem("--Please choose a preferred make");
         JCBModel = new JComboBox(modelSetItems.toArray());
         JCBModel.addItem("--Please choose a preferred model");
         JCBType = new JComboBox(typeSetItems.toArray());
-        JCBType.addItem("--Please choose a preferred type");
         JCBSeatCount = new JComboBox(seatCountItems.toArray());
-        JCBSeatCount.addItem("--Please choose a preferred seat count");
     }
 
 
-    public void buildWestPanel() {
+    private void buildWestPanel() {
         westLayout = new BoxLayout(westPanel, BoxLayout.Y_AXIS);
         westPanel.setLayout(westLayout);
 
@@ -193,6 +209,8 @@ public class InventorySearch extends InventorySearchBuild implements InventorySe
         westPanel.add(JBSearch);
         westPanel.setBorder(BorderFactory.createTitledBorder("Filter Results"));
         //this.addListeners(); test if collection works
+		this.setActionListener();
+
         /*
         when the window is max, westScrollPanel will contain all filters(does not need to scroll down)
         with height of 764, the height may be changed when adding new filters
@@ -211,7 +229,7 @@ public class InventorySearch extends InventorySearchBuild implements InventorySe
         getContentPane().add(westScrollPane, BorderLayout.WEST);
     }
 
-    public void initializationWestPanelButtonCondition() {
+    private void initializationWestPanelButtonCondition() {
         bottonNew.setSelected(true);
         bottonUsed.setSelected(true);
         JCBYear1.setSelectedIndex(JCBYear1.getItemCount()-1);
@@ -233,109 +251,122 @@ public class InventorySearch extends InventorySearchBuild implements InventorySe
     /*
     get user's filter search result and save it on filtercontent
     */
-    public Filtercontent getFilterValue() {
-        FilterContent filtercontent=new FilterContent();
-        while(true) {
+    private FilterContent getFilterValue() {
+        FilterContent filtercontent = new FilterContent();
             //Category
-            if(bottonNew.isSelected()) {
-				filtercontent.setCategory("new");
-			}else if(bottonUsed.isSelected()) {
-				filtercontent.setCategory("used");
-			} 
+			if(bottonNew.isSelected()) {
+				filtercontent.setNeedNew(true);
+			}
+			else {
+				filtercontent.setNeedUsed(false);
+			}
+			if(bottonUsed.isSelected()) {
+				filtercontent.setNeedUsed(true);
+			}
+			else{
+				filtercontent.setNeedUsed(false);
+			}
             //Make
-            filtercontent.setMake((String)JCBMake.getSelectedItem());
+			filtercontent.setMake((String)JCBMake.getSelectedItem());
             //Model
-            filtercontent.setModel((String)JCBModel.getSelectedItem());
+			filtercontent.setModel((String)JCBModel.getSelectedItem());
             //Type
-            filtercontent.setType((String)JCBType.getSelectedItem());
+			filtercontent.setType((String)JCBType.getSelectedItem());
             //year
             //start year
-            filtercontent.setLowYear((String)JCBYear1.getSelectedItem());
+			filtercontent.setLowYear(JCBYear1.getSelectedItem());
             //end year
-            filtercontent.setHighYear((String)JCBYear2.getSelectedItem());
+            filtercontent.setHighYear(JCBYear2.getSelectedItem());
             //price
             //start price
             filtercontent.setLowPrice((String)JCBPrice1.getSelectedItem());
             //end price
             filtercontent.setHighPrice((String)JCBPrice2.getSelectedItem());
             //Mileage
-            filtercontent.setMileage((String)JCBMileage1.getSelectedItem());
+            filtercontent.setMileage((int)JCBMileage1.getSelectedItem());
             //Seat Count
             filtercontent.setSeatCount((String)JCBSeatCount.getSelectedItem());
             //verify year filer validation
-            int startYear=Integer.valueOf(filtercontent.getLowYear());
-	    int endYear=Integer.valueOf(filtercontent.getHighYear());
-	    if(startYear>endYear) {
-		    YearErrorMessage();
-	    }
-            //verify price filter validation
-            double startPrice=Double.valueOf(filtercontent.getLowPrice());
-	    double endPrice=Double.valueOf(filtercontent.getHighPrice());		
-	    if(startPrice>endPrice) {
-		    PriceErrorMessage();				
-	    }
-        }
+			if(filtercontent.isValidate()){
+			    tempFilterContent = filtercontent;
+				return filtercontent;
+			}
+			else {
+				if(filtercontent.yearValidate && !filtercontent.priceValidate){
+					this.PriceErrorMessage();
+				}
+				else if(!filtercontent.yearValidate && filtercontent.priceValidate){
+					this.YearErrorMessage();
+				}
+				else {
+					this.YearErrorMessage();
+					this.PriceErrorMessage();
+				}
+			}
+            return tempFilterContent;
     }
     //show YearErrorMessage if year range is not valid
-    public void YearErrorMessage() {
+    private void YearErrorMessage() {
         String message=" Please enter a valid year range!";
-        JOptionPane.showMessageDialog(new JFrame(), message,"Dialog",JOptionPane.ERROR_MESSAGE);
+        JOptionPane.showMessageDialog(new JFrame(), message,"Dialog",JOptionPane.INFORMATION_MESSAGE);
     }
     //show PriceErrorMessage if price range is not valid
-    public void PriceErrorMessage() {
+    private void PriceErrorMessage() {
         String message=" Please enter a valid price range!";
-        JOptionPane.showMessageDialog(new JFrame(), message,"Dialog",JOptionPane.ERROR_MESSAGE);
+        JOptionPane.showMessageDialog(new JFrame(), message,"Dialog",JOptionPane.INFORMATION_MESSAGE);
     }
     
     //add actionListener to JBSearch
-    public void setActionListener() {
+    private void setActionListener() {
 
         JBSearch.addActionListener(new ActionListener() {
 
             @Override
             public void actionPerformed(ActionEvent e) {
                 FilterContent searchResult = getFilterValue();
-		category=searchResult.getCategory();
+				/*category=searchResult.getCategory();
                 min_year = searchResult.getLowYear();
-		max_year=searchResult.getHighYear();
-		max_mileage=searchResult.getMileage();
-		min_price=searchResult.getLowPrice();
-		max_price=searchResult.getHighPrice();
-		model=searchResult.getModel();
-		make=searchResult.getMake();
-		type=searchResult.getType();
-		seat_count=searchResult.getSeatCount();
-                this.search_inventory(vehicleCollection,inventory,category,min_year,max_year,max_mileage,min_price,max_price,model,make,type,seat_count);
-
+				max_year = searchResult.getHighYear();
+				max_mileage = searchResult.getMileage();
+				min_price = searchResult.getLowPrice();
+				max_price = searchResult.getHighPrice();
+				model=searchResult.getModel();
+				make=searchResult.getMake();
+				type=searchResult.getType();
+				seat_count=searchResult.getSeatCount();*/
+                InventorySearcherImplement inventorySearcherImplement = new InventorySearcherImplement();
+				tempVehicles = inventorySearcherImplement.searchInventory(vehiclesCollection, searchResult);
+				showResults(tempVehicles);
             }
         });
 
         JCBSortBy.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                Inventory sortedinventory = null;
+                ArrayList<Vehicle> sortedinventory = new ArrayList<>();
+                vehicleServices vs = new vehicleServices();
                 if (JCBSortBy.getSelectedItem().equals("Price: Lowest")) {
                     //TODO: need to use backend vehicleService package to get vehicleServiceSort Imp and SortType
-                    sortedinventory = vehicleService.Sort(SortType.PRICE_ASC, inventory);
+                    sortedinventory = vs.Sort(1, tempVehicles);
                 } else if (JCBSortBy.getSelectedItem().equals("Price: Highest")) {
-                    sortedinventory = vehicleService.Sort(SortType.PRICE_DSC, inventory);
+                    sortedinventory = vs.Sort(2, tempVehicles);
                 } else if (JCBSortBy.getSelectedItem().equals("Year: Newest")) {
-                    sortedinventory = vehicleService.Sort(SortType.YEAR_DSC, inventory)；
+                    sortedinventory = vs.Sort(3, tempVehicles);
                 } else if (JCBSortBy.getSelectedItem().equals("Year: Oldest")) {
-                    sortedinventory = vehicleService.Sort(SortType.YEAR_ASC, inventory);
+                    sortedinventory = vs.Sort(4, tempVehicles);
                 } else if (JCBSortBy.getSelectedItem().equals("Mileage: Lowest")) {
-                    sortedinventory = vehicleService.Sort(SortType.MILEAGE_ASC, inventory);
+                    sortedinventory = vs.Sort(5, tempVehicles);
                 } else if (JCBSortBy.getSelectedItem().equals("Mileage: Highest")) {
-                    sortedinventory = vehicleService.Sort(SortType.MILEAGE_DSC, inventory);
-                } else if (JCBSortBy.getSelectedItem().equals("Distance: Nearest(Default)")) {
+                    sortedinventory = vs.Sort(6, tempVehicles);
+                } /*else if (JCBSortBy.getSelectedItem().equals("Distance: Nearest(Default)")) {
                     sortedinventory = vehicleService.Sort(SortType.DISTANCE_ASC, inventory);
                 }
-
-                showResults(sortedinventory.getVehicles());
+*/
+                showResults(sortedinventory);
             }
         });
 
-        JBBack.addActionListener(new ActionListener() {
+        /*JBBack.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 try {
@@ -347,11 +378,38 @@ public class InventorySearch extends InventorySearchBuild implements InventorySe
                 }
                 dispose();
             }
+        });*/
+
+        JCBMake.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                int j = JCBModel.getItemCount();
+                for(int i = 0; i<j; i++){
+                    if(JCBModel.getItemAt(i) != "--Please choose a preferred model" ){
+                        JCBModel.removeItemAt(i);
+                        i--;
+                        j--;
+                    }
+                }
+                for (int i = 0; i < vehiclesCollection.size(); i++) {
+                    if (vehiclesCollection.get(i).getMake().equals(JCBMake.getSelectedItem())) {
+                        JCBModel.addItem(vehiclesCollection.get(i).getModel());
+                    }
+                }
+                JBSearch.doClick();
+            }
+        });
+
+        JCBModel.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                JBSearch.doClick();
+            }
         });
     }
 
 
-    public void buildCentralPanel() {
+    private void buildCentralPanel() {
         this.centerPanel.setBorder(BorderFactory.createTitledBorder("Results"));
         //centerPanel.setPreferredSize(new Dimension(getWidth(),764));
         this.centerPanel.setLayout(new BoxLayout(this.centerPanel, BoxLayout.Y_AXIS));
@@ -379,18 +437,18 @@ public class InventorySearch extends InventorySearchBuild implements InventorySe
         this.centerPanel.revalidate();
     }
 
-    public void defineSouthPanelComponents() {
+    private void defineSouthPanelComponents() {
         JBBack = new JButton("Back");
     }
 
-    public void buildSouthPanel() {
+    private void buildSouthPanel() {
         southPanel.add(JBBack);
         getContentPane().add(southPanel, BorderLayout.SOUTH);
         getContentPane().setVisible(true);
     }
 
-    public static void main(String[] args) {
-        InventorySearch is = new InventorySearch("D1");
+    public static void main(String[] args) throws FileNotFoundException {
+        InventorySearch is = new InventorySearch("D10");
         is.setVisible(true);
     }
 
@@ -399,10 +457,10 @@ public class InventorySearch extends InventorySearchBuild implements InventorySe
 //This class is to show results in centerPanel
 class ResultPanel extends JPanel{
 
-    ImageIcon imageIcon;
-    Image image;
+    private ImageIcon imageIcon;
+    private Image image;
     JLabel resultPrice, resultLocation, resultMake, resultYear, resultMileage, resultCondition, vehicleID;
-    JButton checkButton;
+    private JButton checkButton;
     String imagePath;
     ResultPanel(String imagePath) {
         this.showImage(imagePath);
@@ -467,7 +525,7 @@ class ResultPanel extends JPanel{
 
 //This class is for test only
 class DetailTest extends JFrame{
-    ResultPanel carDetail;
+    private ResultPanel carDetail;
     DetailTest(ResultPanel result){
         this.showDetail(result);
     }
@@ -489,4 +547,73 @@ class DetailTest extends JFrame{
         this.add(this.carDetail);
         this.setVisible(true);
     }
+}
+
+//This class is for temporarily sorting
+class vehicleServices{
+	static ArrayList<Vehicle> Sort(int sortMode, ArrayList<Vehicle> vehicles){
+		if(sortMode == 1){
+			for(int i = 0; i<vehicles.size()-1; i++){
+				for(int j = i+1; j<vehicles.size(); j++){
+					if(Double.valueOf(vehicles.get(i).getPrice().replace("$","").replace(",",
+							""))>Double.valueOf(vehicles.get(j).getPrice().replace("$","")
+							.replace(",",""))){
+						Collections.swap(vehicles,i,j);
+					}
+				}
+			}
+		}
+		else if(sortMode == 2){
+			for(int i = 0; i<vehicles.size()-1; i++){
+				for(int j = i+1; j<vehicles.size(); j++){
+					if(Double.valueOf(vehicles.get(i).getPrice().replace("$","").replace(",",
+							""))<Double.valueOf(vehicles.get(j).getPrice().replace("$","")
+							.replace(",",""))){
+						Collections.swap(vehicles,i,j);
+					}
+				}
+			}
+		}
+		else if(sortMode == 3){
+			for(int i = 0; i<vehicles.size()-1; i++){
+				for(int j = i+1; j<vehicles.size(); j++){
+					if(Double.valueOf(vehicles.get(i).getYear())<Double.valueOf(vehicles.get(j).getYear())){
+						Collections.swap(vehicles,i,j);
+					}
+				}
+			}
+		}
+		else if(sortMode == 4){
+			for(int i = 0; i<vehicles.size()-1; i++){
+				for(int j = i+1; j<vehicles.size(); j++){
+					if(Double.valueOf(vehicles.get(i).getYear())>Double.valueOf(vehicles.get(j).getYear())){
+						Collections.swap(vehicles,i,j);
+					}
+				}
+			}
+		}
+		else if(sortMode == 5){
+			for(int i = 0; i<vehicles.size()-1; i++){
+				for(int j = i+1; j<vehicles.size(); j++){
+					if(Double.valueOf(vehicles.get(i).getMileage().replace(",",""))>Double.valueOf
+							(vehicles.get(j).getMileage().replace(",",""))){
+						Collections.swap(vehicles,i,j);
+					}
+				}
+			}
+		}
+		else if(sortMode == 6){
+			for(int i = 0; i<vehicles.size()-1; i++){
+				for(int j = i+1; j<vehicles.size(); j++){
+					if(Double.valueOf(vehicles.get(i).getMileage().replace(",",""))<Double.valueOf
+							(vehicles.get(j).getMileage().replace(",",""))){
+						Collections.swap(vehicles,i,j);
+					}
+				}
+			}
+		}
+
+
+		return vehicles;
+	}
 }

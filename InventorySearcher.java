@@ -1,21 +1,10 @@
-package InventorySearcher;
+package finalprojectgroup2test2;
 
 import dto.Vehicle;
 import java.util.ArrayList;
 
 public interface InventorySearcher {
-	ArrayList<Vehicle> search_inventory(ArrayList<Vehicle> inventory,
-													  String is_new,
-													  String is_used,
-													  String min_year,
-												      String max_year,
-													  String max_mileage,
-													  String min_price,
-													  String max_price,
-													  String model,
-													  String make,
-													  String type,
-													  String seat_count);
+	ArrayList<Vehicle> searchInventory(ArrayList<Vehicle> inventory, FilterContent filterContent);
 }
 
 // use InventorySearcher.search_inventory(...) to get search result: return type: ArrayList<Vehicle>

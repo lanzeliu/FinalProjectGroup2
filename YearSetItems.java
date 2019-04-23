@@ -14,8 +14,8 @@ public class YearSetItems {
 	}
 	
 	// Function with input vehiclesCollection and Make and Model that used to return an ArrayList with String objects
-	public ArrayList<Integer> getYearItems(ArrayList<Vehicle> vehiclesCollection, String Make, String Model) {
-		ArrayList<Integer> yearItemsList = new ArrayList<>();
+	public ArrayList<Object> getYearItems(ArrayList<Vehicle> vehiclesCollection, String Make, String Model) {
+		ArrayList<Object> yearItemsList = new ArrayList<>();
 		
 		if (Make.equals("") && Model.equals("")) {
 			for (int i=0; i<vehiclesCollection.size(); i++) {
@@ -84,7 +84,7 @@ public class YearSetItems {
 		
 		YearSetItems ysiTest = new YearSetItems();
 
-		for (int i : ysiTest.getYearItems(vehiclesCollectionTest, "", "")) {
+		for (Object i : ysiTest.getYearItems(vehiclesCollectionTest, "", "")) {
 			System.out.println(i);
 		}
 	}
