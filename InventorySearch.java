@@ -58,20 +58,32 @@ public class InventorySearch extends InventorySearchBuild{
         };
 
 
-        labelNorthTitle = new JLabel("Welcome to the inventory search page! This page shows the inventory from dealerID " + this.dealerID);
+        labelSortBy = new JLabel("Sort by:");
+        File sortByFile = new File("SortByItems.txt");
+        Scanner scanner = new Scanner(sortByFile);
+        while (scanner.hasNextLine()) {
+        	sortBySetItems.add(scanner.nextLine());
+        }
+        JCBSortBy = new JComboBox(sortBySetItems.toArray());
 
-        labelSortBy = new JLabel("                                                                          Sort by:");
-        JCBSortBy = new JComboBox(new String[] {"Distance: Nearest(Default)", "Price: Lowest", "Price: Highest", "Year: Newest", "Year: Oldest", "Mileage: Lowest", "Mileage: Highest"});
-
-        northPanel.setOpaque(true);
+        // Set north title
+        File northTitleFile = new File("NorthPanelTitle.txt");
+        scanner = new Scanner(northTitleFile);
+        northPanelTitle.add(scanner.nextLine()); 
+        northPanelTitle.add(this.dealerID);
+        northPanelTitle.add("                                                                               ");
+		
+	northPanel.setOpaque(true);
         northPanel.add(Box.createRigidArea(new Dimension(0, 10)));
-        northPanel.add(labelNorthTitle);
+        
+	northPanel.add(labelNorthTitle);
+		
+        northPanel.add(Box.createRigidArea(new Dimension(100, 100)));
+	northPanel.setLayout(new FlowLayout(FlowLayout.RIGHT));
+		
         northPanel.add(labelSortBy, BorderLayout.EAST);
         northPanel.add(JCBSortBy, BorderLayout.EAST);
-
-        northPanel.add(Box.createRigidArea(new Dimension(100, 100)));
-        northPanel.setLayout(new FlowLayout(FlowLayout.RIGHT));
-
+		
         getContentPane().add(northPanel, BorderLayout.NORTH);
     }
 
